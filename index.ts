@@ -43,15 +43,23 @@ const colorize = (...args: any) => ({
 export function render(config: BannerConfig) {
   const GREEN = "\x1b[32m";
   const YELLOW = "\x1b[33m";
-  
-  let renderResult = colorize(`Thank you for installing ${config.ProjectName}!\n`).green;
-  renderResult += colorize(`Please consider donating to help us maintain it.\n`).green;
-  
-  renderResult += colorize(config.Funding.reduce((acc, funding) => {
-    return acc + `${funding.kind}:${funding.url}}\n`;
-  }, renderResult)).magenta;
 
-  renderResult += colorize(`You can also star the project on GitHub:${config.StarUrl}\n`).green;
+  let renderResult = colorize(
+    `Thank you for installing ${config.ProjectName}!\n`
+  ).green;
+  renderResult += colorize(
+    `Please consider donating to help us maintain it.\n`
+  ).green;
+
+  renderResult += colorize(
+    config.Funding.reduce((acc, funding) => {
+      return acc + `${funding.kind}:${funding.url}}\n`;
+    },'')
+  ).magenta;
+
+  renderResult += colorize(
+    `You can also star the project on GitHub:${config.StarUrl}\n`
+  ).green;
   console.log(renderResult);
 }
 
@@ -75,7 +83,9 @@ function readConfiguration(): BannerConfig {
 }
 
 export function writeConfiguration(config?: BannerConfig) {
-  if (!!config) {
+  config =
+    config || JSONSafeParse(process.env.POST_INSTALL_BANNER_CONFIG || "");
+  if (!config) {
     config = {
       Funding: [
         {
@@ -87,8 +97,10 @@ export function writeConfiguration(config?: BannerConfig) {
       StarUrl: "https://github.com/automock/automock",
     };
   }
+
   const configPath = getConfigPath();
-  fs.writeFileSync(configPath, JSON.stringify(config));
+
+  fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 }
 
 function getConfigPath(): string {
@@ -96,9 +108,9 @@ function getConfigPath(): string {
 }
 
 export function JSONSafeParse(toParse: string) {
-    try {
-        return JSON.parse(toParse);
-    } catch {
-        return null
-    }
+  try {
+    return JSON.parse(toParse);
+  } catch {
+    return null;
+  }
 }

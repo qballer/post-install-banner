@@ -1,4 +1,4 @@
 #!/usr/bin/env node
 
 const mod = require('../dist')
-mod.runBanner()
+mod.writeConfiguration()
