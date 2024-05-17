@@ -53,12 +53,12 @@ export function render(config: BannerConfig) {
 
   renderResult += colorize(
     config.Funding.reduce((acc, funding) => {
-      return acc + `${funding.kind}:${funding.url}}\n`;
+      return acc + `${funding.kind} : ${funding.url}\n`;
     },'')
   ).magenta;
 
   renderResult += colorize(
-    `You can also star the project on GitHub:${config.StarUrl}\n`
+    `You can also star the project on GitHub: ${config.StarUrl}\n`
   ).green;
   console.log(renderResult);
 }
